@@ -1,3 +1,46 @@
+
+--- start-database.sh
+#!/bin/sh
+docker run \
+  --detach \
+  --name some-mariadb \
+  --env MARIADB_USER=example-user \
+  --env MARIADB_PASSWORD=my_cool_secret \
+  --env MARIADB_ROOT_PASSWORD=my-secret-pw \
+  --env MARIADB_DATABASE=wordpress \
+  -p 3306:3306 \
+  -v `pwd`/mariadb-data:/var/lib/mysql \
+  mariadb:latest
+  
+--- stop-database.sh
+#!/bin/sh
+docker stop some-mariadb
+docker rm some-mariadb
+  
+  
+-- docker-compose.yml
+version: "3"
+services:
+  mariadb:
+    image: mariadb:latest
+    environment:
+      - MARIADB_USER=example-user
+      - MARIADB_PASSWORD=my_cool_secret
+      - MARIADB_ROOT_PASSWORD=my-secret-pw
+      - MARIADB_DATABASE=wordpress
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mariadb-data:/var/lib/mysql
+      
+--- .dockerignore
+.git/
+.gitignore
+Dockerfile
+.dockerignore
+docker-compose.yml
+demo
+
 --- Dockerfile (multi-line RUN)
 FROM debian:11.6-slim
 CMD ["./demo"]
@@ -23,4 +66,5 @@ CMD ["./demo"]
 EXPOSE 5000
 WORKDIR /opt/wpp
 COPY --from=builder /opt/wpp/demo .
+
 
