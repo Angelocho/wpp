@@ -1,4 +1,4 @@
-FROM debian
+FROM debian:11.6
 WORKDIR /opt/wpp #Si no existe la carpeta, la crea y además nos situamos dentro de ella
 COPY . .
 RUN apt-get update \
